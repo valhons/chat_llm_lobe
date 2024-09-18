@@ -2,8 +2,6 @@ import { t } from 'i18next';
 
 import { DEFAULT_INBOX_AVATAR, DEFAULT_USER_AVATAR } from '@/const/meta';
 import { INBOX_SESSION_ID } from '@/const/session';
-import { useAgentStore } from '@/store/agent';
-import { agentSelectors } from '@/store/agent/selectors';
 import { messageMapKey } from '@/store/chat/slices/message/utils';
 import { featureFlagsSelectors } from '@/store/serverConfig';
 import { createServerConfigStore } from '@/store/serverConfig/store';
@@ -11,6 +9,7 @@ import { useSessionStore } from '@/store/session';
 import { sessionMetaSelectors } from '@/store/session/selectors';
 import { useUserStore } from '@/store/user';
 import { userProfileSelectors } from '@/store/user/selectors';
+import { LobeAgentChatConfig } from '@/types/agent';
 import { ChatFileItem, ChatMessage } from '@/types/message';
 import { MetaData } from '@/types/meta';
 import { merge } from '@/utils/merge';
@@ -126,15 +125,16 @@ const currentChatIDsWithGuideMessage = (s: ChatStore) => {
   return currentChatsWithGuideMessage(meta)(s).map((s) => s.id);
 };
 
-const currentChatsWithHistoryConfig = (s: ChatStore): ChatMessage[] => {
+const currentChatsWithHistoryConfig = (
+  s: ChatStore,
+  config: LobeAgentChatConfig,
+): ChatMessage[] => {
   const chats = currentChats(s);
-  const config = agentSelectors.currentAgentChatConfig(useAgentStore.getState());
-
   return chatHelpers.getSlicedMessagesWithConfig(chats, config);
 };
 
-const chatsMessageString = (s: ChatStore): string => {
-  const chats = currentChatsWithHistoryConfig(s);
+const chatsMessageString = (s: ChatStore, config: LobeAgentChatConfig): string => {
+  const chats = currentChatsWithHistoryConfig(s, config);
   return chats.map((m) => m.content).join('');
 };
 
@@ -159,7 +159,6 @@ const isMessageLoading = (id: string) => (s: ChatStore) => s.messageLoadingIds.i
 const isMessageGenerating = (id: string) => (s: ChatStore) => s.chatLoadingIds.includes(id);
 const isMessageInRAGFlow = (id: string) => (s: ChatStore) => s.messageRAGLoadingIds.includes(id);
 const isPluginApiInvoking = (id: string) => (s: ChatStore) => s.pluginApiLoadingIds.includes(id);
-
 const isToolCallStreaming = (id: string, index: number) => (s: ChatStore) => {
   const isLoading = s.toolCallingStreamIds[id];
 
