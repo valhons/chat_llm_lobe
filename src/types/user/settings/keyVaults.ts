@@ -16,6 +16,11 @@ export interface AWSBedrockKeyVault {
   sessionToken?: string;
 }
 
+export interface CloudflareKeyVault {
+  apiKey?: string;
+  baseURLOrAccountID?: string;
+}
+
 export interface UserKeyVaults {
   ai21?: OpenAICompatibleKeyVault;
   ai360?: OpenAICompatibleKeyVault;
@@ -23,6 +28,7 @@ export interface UserKeyVaults {
   azure?: AzureOpenAIKeyVault;
   baichuan?: OpenAICompatibleKeyVault;
   bedrock?: AWSBedrockKeyVault;
+  cloudflare?: CloudflareKeyVault;
   deepseek?: OpenAICompatibleKeyVault;
   fireworksai?: OpenAICompatibleKeyVault;
   github?: OpenAICompatibleKeyVault;

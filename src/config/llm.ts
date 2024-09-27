@@ -101,6 +101,10 @@ export const getLLMConfig = () => {
       ENABLED_TAICHU: z.boolean(),
       TAICHU_API_KEY: z.string().optional(),
 
+      ENABLED_CLOUDFLARE: z.boolean(),
+      CLOUDFLARE_API_KEY: z.string().optional(),
+      CLOUDFLARE_BASE_URL_OR_ACCOUNT_ID: z.string().optional(),
+
       ENABLED_AI360: z.boolean(),
       AI360_API_KEY: z.string().optional(),
 
@@ -214,6 +218,11 @@ export const getLLMConfig = () => {
 
       ENABLED_TAICHU: !!process.env.TAICHU_API_KEY,
       TAICHU_API_KEY: process.env.TAICHU_API_KEY,
+
+      ENABLED_CLOUDFLARE:
+        !!process.env.CLOUDFLARE_API_KEY && !!process.env.CLOUDFLARE_BASE_URL_OR_ACCOUNT_ID,
+      CLOUDFLARE_API_KEY: process.env.CLOUDFLARE_API_KEY,
+      CLOUDFLARE_BASE_URL_OR_ACCOUNT_ID: process.env.CLOUDFLARE_BASE_URL_OR_ACCOUNT_ID,
 
       ENABLED_AI360: !!process.env.AI360_API_KEY,
       AI360_API_KEY: process.env.AI360_API_KEY,

@@ -64,6 +64,8 @@ export const getServerGlobalConfig = () => {
     ENABLED_STEPFUN,
     ENABLED_BAICHUAN,
     ENABLED_TAICHU,
+    ENABLED_CLOUDFLARE,
+
     ENABLED_AI21,
     ENABLED_AI360,
 
@@ -125,6 +127,7 @@ export const getServerGlobalConfig = () => {
           modelString: AWS_BEDROCK_MODEL_LIST,
         }),
       },
+      cloudflare: { enabled: ENABLED_CLOUDFLARE },
       deepseek: { enabled: ENABLED_DEEPSEEK },
 
       fireworksai: {

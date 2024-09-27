@@ -9,6 +9,7 @@ import { LobeAnthropicAI } from './anthropic';
 import { LobeAzureOpenAI } from './azureOpenai';
 import { LobeBaichuanAI } from './baichuan';
 import { LobeBedrockAI, LobeBedrockAIParams } from './bedrock';
+import { LobeCloudflareAI, LobeCloudflareParams } from './cloudflare';
 import { LobeDeepSeekAI } from './deepseek';
 import { LobeFireworksAI } from './fireworksai';
 import { LobeGithubAI } from './github';
@@ -128,6 +129,7 @@ class AgentRuntime {
       azure: { apiVersion?: string; apikey?: string; endpoint?: string };
       baichuan: Partial<ClientOptions>;
       bedrock: Partial<LobeBedrockAIParams>;
+      cloudflare: Partial<LobeCloudflareParams>;
       deepseek: Partial<ClientOptions>;
       fireworksai: Partial<ClientOptions>;
       github: Partial<ClientOptions>;
@@ -300,8 +302,12 @@ class AgentRuntime {
         runtimeModel = new LobeAi21AI(params.ai21);
         break;
       }
-    }
 
+      case ModelProvider.Cloudflare: {
+        runtimeModel = new LobeCloudflareAI(params.cloudflare ?? {});
+        break;
+      }
+    }
     return new AgentRuntime(runtimeModel);
   }
 }

@@ -36,6 +36,9 @@ export interface JWTPayload {
   awsRegion?: string;
   awsSecretAccessKey?: string;
   awsSessionToken?: string;
+
+  cloudflareBaseURLOrAccountID?: string;
+
   /**
    * user id
    * in client db mode it's a uuid
