@@ -7,10 +7,10 @@ import {
   ChatStreamPayload,
   LobeRuntimeAI,
 } from '@/libs/agent-runtime';
-import { OpenAIStream } from '@/libs/agent-runtime/utils/streams';
 
 import { debugStream } from '../utils/debugStream';
 import { StreamingResponse } from '../utils/response';
+import { OpenAIStream } from '../utils/streams';
 import { HuggingfaceResultToStream } from '../utils/streams/huggingface';
 
 export class LobeHuggingFaceAI implements LobeRuntimeAI {
@@ -20,22 +20,22 @@ export class LobeHuggingFaceAI implements LobeRuntimeAI {
   constructor({ apiKey, baseURL }: { apiKey?: string; baseURL?: string } = {}) {
     if (!apiKey) throw AgentRuntimeError.createError(AgentRuntimeErrorType.InvalidProviderAPIKey);
 
-    this.client = new HfInference(apiKey);
-
-    if (baseURL) {
-      this.client.endpoint(baseURL);
-    }
+    this.client =
+      // baseURL
+      // ? (new HfInference(apiKey).endpoint(baseURL) as HfInference)
+      new HfInference(apiKey);
+    this.baseURL = baseURL;
   }
 
   async chat(payload: ChatStreamPayload, options?: ChatCompetitionOptions) {
     try {
       const hfRes = this.client.chatCompletionStream({
+        endpointUrl: this.baseURL,
         messages: payload.messages,
         model: payload.model,
-
         stream: true,
-        temperature: payload.temperature,
-        top_p: payload.top_p,
+        // temperature: payload.temperature,
+        // top_p: payload.top_p,
       });
 
       const rawStream = HuggingfaceResultToStream(hfRes);
