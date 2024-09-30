@@ -7,7 +7,6 @@ import {
   ChatCompetitionOptions,
   ChatStreamPayload,
   LobeRuntimeAI,
-  ModelProvider,
 } from '@/libs/agent-runtime';
 
 import { debugStream } from '../utils/debugStream';
@@ -16,16 +15,15 @@ export class LobeHuggingFaceAI implements LobeRuntimeAI {
   private client: HfInference;
   baseURL?: string;
 
-  constructor({ apiKey }: { apiKey?: string }) {
-    if (!apiKey)
-      throw AgentRuntimeError.createError(AgentRuntimeErrorType.InvalidHuggingFaceAPIKey);
+  constructor({ apiKey }: { apiKey?: string } = {}) {
+    if (!apiKey) throw AgentRuntimeError.createError(AgentRuntimeErrorType.InvalidProviderAPIKey);
 
     this.client = new HfInference(apiKey);
   }
 
   async chat(payload: ChatStreamPayload, options?: ChatCompetitionOptions) {
     try {
-      const hfStream = await this.client.textGenerationStream({
+      const hfStream = this.client.textGenerationStream({
         inputs: payload.messages,
         model: payload.model,
         parameters: {
@@ -50,9 +48,7 @@ export class LobeHuggingFaceAI implements LobeRuntimeAI {
     } catch (e) {
       const err = e as Error;
 
-      const { errorType, error } = this.parseErrorMessage(err.message);
-
-      throw AgentRuntimeError.chat({ error, errorType, provider: ModelProvider.Google });
+      throw AgentRuntimeError.createError(AgentRuntimeErrorType.ProviderBizError, err);
     }
   }
 }
