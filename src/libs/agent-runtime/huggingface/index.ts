@@ -1,5 +1,4 @@
 import { HfInference } from '@huggingface/inference';
-import { HuggingFaceStream, StreamingTextResponse } from 'ai';
 
 import {
   AgentRuntimeError,
@@ -8,43 +7,49 @@ import {
   ChatStreamPayload,
   LobeRuntimeAI,
 } from '@/libs/agent-runtime';
+import { OpenAIStream } from '@/libs/agent-runtime/utils/streams';
 
 import { debugStream } from '../utils/debugStream';
+import { StreamingResponse } from '../utils/response';
+import { HuggingfaceResultToStream } from '../utils/streams/huggingface';
 
 export class LobeHuggingFaceAI implements LobeRuntimeAI {
   private client: HfInference;
   baseURL?: string;
 
-  constructor({ apiKey }: { apiKey?: string } = {}) {
+  constructor({ apiKey, baseURL }: { apiKey?: string; baseURL?: string } = {}) {
     if (!apiKey) throw AgentRuntimeError.createError(AgentRuntimeErrorType.InvalidProviderAPIKey);
 
     this.client = new HfInference(apiKey);
+
+    if (baseURL) {
+      this.client.endpoint(baseURL);
+    }
   }
 
   async chat(payload: ChatStreamPayload, options?: ChatCompetitionOptions) {
     try {
-      const hfStream = this.client.textGenerationStream({
-        inputs: payload.messages,
+      const hfRes = this.client.chatCompletionStream({
+        messages: payload.messages,
         model: payload.model,
-        parameters: {
-          temperature: payload.temperature,
-          top_p: payload.top_p,
-        },
+
         stream: true,
+        temperature: payload.temperature,
+        top_p: payload.top_p,
       });
 
+      const rawStream = HuggingfaceResultToStream(hfRes);
       // Convert the response into a friendly text-stream
-
-      const stream = HuggingFaceStream(hfStream, options?.callback);
-
-      const [debug, output] = stream.tee();
+      const [debug, output] = rawStream.tee();
 
       if (process.env.DEBUG_HUGGINGFACE_CHAT_COMPLETION === '1') {
         debugStream(debug).catch(console.error);
       }
 
+      const stream = OpenAIStream(output, options?.callback);
+
       // Respond with the stream
-      return new StreamingTextResponse(output, { headers: options?.headers });
+      return StreamingResponse(stream, { headers: options?.headers });
     } catch (e) {
       const err = e as Error;
 

@@ -38,6 +38,7 @@ export const generateToolCallId = (index: number, functionName?: string) =>
 
 export const chatStreamable = async function* <T>(stream: AsyncIterable<T>) {
   for await (const response of stream) {
+    console.log(response);
     yield response;
   }
 };

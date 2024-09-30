@@ -135,7 +135,7 @@ class AgentRuntime {
       github: Partial<ClientOptions>;
       google: { apiKey?: string; baseURL?: string };
       groq: Partial<ClientOptions>;
-      huggingface: { apiKey?: string };
+      huggingface: { apiKey?: string; baseURL?: string };
       hunyuan: Partial<ClientOptions>;
       minimax: Partial<ClientOptions>;
       mistral: Partial<ClientOptions>;
