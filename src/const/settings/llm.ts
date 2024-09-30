@@ -60,6 +60,9 @@ export const DEFAULT_LLM_CONFIG: UserModelProviderConfig = {
     enabled: false,
     enabledModels: filterEnabledModels(DeepSeekProviderCard),
   },
+  doubao: {
+    enabled: false,
+  },
   fireworksai: {
     enabled: false,
     enabledModels: filterEnabledModels(FireworksAIProviderCard),

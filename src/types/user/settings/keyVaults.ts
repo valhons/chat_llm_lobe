@@ -24,6 +24,7 @@ export interface UserKeyVaults {
   baichuan?: OpenAICompatibleKeyVault;
   bedrock?: AWSBedrockKeyVault;
   deepseek?: OpenAICompatibleKeyVault;
+  doubao?: OpenAICompatibleKeyVault;
   fireworksai?: OpenAICompatibleKeyVault;
   github?: OpenAICompatibleKeyVault;
   google?: OpenAICompatibleKeyVault;
